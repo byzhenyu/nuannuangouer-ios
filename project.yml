@@ -1,0 +1,55 @@
+name: NuanNuanGouer
+options:
+  bundleIdPrefix: com.nuannuangouer
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "15.0"
+settings:
+  base:
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGNING_ALLOWED: "NO"
+    CODE_SIGNING_REQUIRED: "NO"
+    CODE_SIGN_IDENTITY: ""
+    SWIFT_VERSION: "5.9"
+targets:
+  NuanNuanGouer:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: NuanNuanGouer
+        excludes:
+          - "Info.plist"
+          - "NuanNuanGouer-Bridging-Header.h"
+    resources:
+      - NuanNuanGouer/Assets.xcassets
+    settings:
+      base:
+        INFOPLIST_FILE: NuanNuanGouer/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.nuannuangouer.tv
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ENABLE_BITCODE: "NO"
+        CODE_SIGNING_ALLOWED: "NO"
+        CODE_SIGN_IDENTITY: ""
+        CODE_SIGNING_REQUIRED: "NO"
+        DEVELOPMENT_TEAM: ""
+        SWIFT_OBJC_BRIDGING_HEADER: "NuanNuanGouer/NuanNuanGouer-Bridging-Header.h"
+    info:
+      path: NuanNuanGouer/Info.plist
+      properties:
+        CFBundleDisplayName: 暖暖狗儿
+        CFBundleIdentifier: com.nuannuangouer.tv
+        CFBundleShortVersionString: "1.0.0"
+        CFBundleVersion: "1"
+        MinimumOSVersion: "16.0"
+        UILaunchScreen: {}
+        UIBackgroundModes:
+          - audio
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight

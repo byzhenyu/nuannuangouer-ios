@@ -1,0 +1,74 @@
+# Build IPA workflow for NuanNuanGouer
+# Badge: ![Build IPA](https://github.com/<OWNER>/<REPO>/actions/workflows/build-ipa.yml/badge.svg)
+
+name: Build IPA
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Unsigned IPA
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        run: |
+          sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
+          xcodebuild -version
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build IPA
+        run: |
+          chmod +x build_ipa.sh
+          ./build_ipa.sh
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NuanNuanGouer-IPA
+          path: build/ipa/NuanNuanGouer.ipa
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Generate Release Tag
+        id: tag
+        run: |
+          VERSION=$(grep 'MARKETING_VERSION' project.yml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          TAG="v${VERSION}-build.$(date +'%Y%m%d-%H%M%S')"
+          RELEASE_NAME="NuanNuanGouer v${VERSION} Build $(date +'%Y-%m-%d %H:%M')"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: ${{ steps.tag.outputs.release_name }}
+          body: |
+            ## NuanNuanGouer v${{ steps.tag.outputs.version }} IPA Build
+
+            - **Version:** ${{ steps.tag.outputs.version }}
+            - **Commit:** ${{ github.sha }}
+            - **Build Time:** ${{ steps.tag.outputs.release_name }}
+            - **Branch:** ${{ github.ref_name }}
+
+            下载下方 IPA 文件，通过 AltStore/Sideloadly 等工具安装到设备。
+          files: build/ipa/NuanNuanGouer.ipa
+          prerelease: true
