@@ -43,9 +43,11 @@ final class AppState: ObservableObject {
     private let activeSiteKey = "NuanNuanGouer.activeSite"
     private let didSeedDefaultKey = "NuanNuanGouer.didSeedDefaultSubscription"
 
-    // MARK: - 默认订阅源
-    static let defaultSubscriptionName = "默认源"
+    // MARK: - 默认订阅源（首次启动自动注入）
+    static let defaultSubscriptionName = "暖暖狗儿·直播"
     static let defaultSubscriptionURL = "http://www.y456y.com"
+    static let vodSubscriptionName = "暖暖狗儿·点播"
+    static let vodSubscriptionURL = "https://cdn.jsdelivr.net/gh/byzhenyu/nuannuangouer-ios@main/ios-vod.json"
 
     init() {
         loadSubscriptions()
@@ -76,13 +78,19 @@ final class AppState: ObservableObject {
             defaults.set(true, forKey: didSeedDefaultKey)
             return
         }
-        let sub = Subscription(
+        let liveSub = Subscription(
             name: Self.defaultSubscriptionName,
             url: Self.defaultSubscriptionURL,
             isActive: true
         )
-        subscriptions.append(sub)
-        activeSubscriptionId = sub.id
+        subscriptions.append(liveSub)
+        activeSubscriptionId = liveSub.id
+        let vodSub = Subscription(
+            name: Self.vodSubscriptionName,
+            url: Self.vodSubscriptionURL,
+            isActive: true
+        )
+        subscriptions.append(vodSub)
         saveSubscriptions()
         defaults.set(true, forKey: didSeedDefaultKey)
     }
